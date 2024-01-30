@@ -1,4 +1,3 @@
-// models/fileModel.js
 const mongoose = require('mongoose');
 
 const File = mongoose.model('File', {

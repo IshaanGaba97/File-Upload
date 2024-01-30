@@ -1,7 +1,7 @@
 const express = require('express');
 const File = require('./models/fileModel');
 const dotenv = require('dotenv');
-const middlewares = require('./middlewares/middlewares');
+const {upload} = require('./middlewares/middlewares');
 require('./db/connect');
 
 const app = express();
@@ -9,7 +9,7 @@ app.use(express.json());
 
 dotenv.config();
 
-app.put('/upload', middlewares.upload.single('file'), async (req, res) => {
+app.post('/upload', upload.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
@@ -22,10 +22,8 @@ app.put('/upload', middlewares.upload.single('file'), async (req, res) => {
   });
 
   await file.save();
-
   return res.status(200).json({ fileId });
 });
-
 
 app.delete('/delete-file/:fileId', async (req, res) => {
   const fileId = req.params.fileId;
@@ -33,7 +31,7 @@ app.delete('/delete-file/:fileId', async (req, res) => {
   return res.status(200).json({ message: 'File deleted successfully' });
 });
 
-app.post('/rename-file/:fileId', async (req, res) => {
+app.put('/rename-file/:fileId', async (req, res) => {
   const fileId = req.params.fileId;
   const newName = req.body.newName;
   await File.findOneAndUpdate({ fileId: fileId }, { originalName: newName });

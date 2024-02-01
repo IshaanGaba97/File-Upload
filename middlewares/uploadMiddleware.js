@@ -1,6 +1,7 @@
 const multer = require('multer');
+
 const storage = multer.memoryStorage();
-const {ERROR_MIMETYPE} = require('../constants/constants')
+
 const upload = multer({
   storage: storage,
   limits: { fileSize: 1000000 },
@@ -8,11 +9,9 @@ const upload = multer({
     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
       cb(null, true);
     } else {
-      cb(new Error(ERROR_MIMETYPE));
+      cb(new Error('Only JPEG/PNG files are allowed'));
     }
   },
 });
 
 module.exports = {upload};
-
-
